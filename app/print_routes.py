@@ -1,10 +1,11 @@
-from flask import Blueprint, request, render_template, current_user
-import cups, os, subprocess
-from .converter import to_pdf
-from . import db
-from .models import PrintJob
+from flask import Blueprint, request, render_template, flash, redirect, url_for, send_file
+from flask_login import current_user, login_required   # ← 关键：从这里导入！
+from .models import PrintJob, db
+import os
+import uuid
+from datetime import datetime
 
-print_bp = Blueprint('print', __name__, url_prefix='')
+print_bp = Blueprint('print', __name__, template_folder='templates')
 
 @print_bp.route('/print')
 def print_page():
