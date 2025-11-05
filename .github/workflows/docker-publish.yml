@@ -1,6 +1,4 @@
-# .github/workflows/docker-publish.yml（终极合体版）
 name: Build & Push Multi-Arch
-
 on:
   push:
     tags: [ 'v*.*.*' ]
@@ -32,12 +30,15 @@ jobs:
           echo "version=$VER" >> $GITHUB_OUTPUT
           echo "image=ghcr.io/${{ github.repository_owner }}/printer-pro" >> $GITHUB_OUTPUT
 
-      - uses: docker/build-push-action@v6
+      - name: Build & Push
+        uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
             ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
-            ${{ steps.meta.outputs.image }}:latest     # ← 所有架构合并到这一个标签
+            ${{ steps.meta.outputs.image }}:latest
+          # 关键：把注释写在这里，不写在 tags: 里！
+          # ← 所有架构自动合并到 :latest 一个标签
           cache-from: type=gha
           cache-to: type=gha,mode=max
