@@ -11,6 +11,9 @@ services:
       - SQLALCHEMY_DATABASE_URI=mysql+pymysql://flask:flaskpass@db:3306/flaskdb
       - SECRET_KEY=printer-pro-secret-2025
       - REDIS_URL=redis://redis:6379/0
+      - ADMIN_USER=admin
+      - ADMIN_PASS=123456
+      - ADMIN_EMAIL=admin@company.com
     command: flask run --host=0.0.0.0 --port=5000
 
   db:
