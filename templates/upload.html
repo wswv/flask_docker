@@ -3,52 +3,62 @@
 {% block title %}上传文件{% endblock %}
 
 {% block content %}
-    <h2>上传文件并打印</h2>
-	
-	        <div class="col-md-4 text-center">
-            {# --- 新增：显示二维码和 URL --- #}
-            {% if qr_code_uri %}
-            <div class="card p-3 mb-3">
-                <h5 class="card-title">移动端扫码访问</h5>
-                <img src="data:image/png;base64,{{ qr_code_uri }}" 
-                     alt="Web Print QR Code" 
-                     style="max-width: 200px; height: auto; margin: 0 auto;">
-                <p class="mt-2 small text-muted">
-                    URL: <code>http://{{ request.host }}{{ url_for('main.upload_file') }}</code>
-                </p>
-            </div>
-            {% endif %}
-            {# --- 二维码显示结束 --- #}
+  <div class="row">
+    <div class="col-12">
+      <h2>上传文件并打印</h2>
+      <p class="text-muted">使用右侧二维码在手机上打开本页面并上传文件（支持 PDF、图片、文本文档等）。</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      {% if qr_code_uri %}
+      <div class="card mb-3 text-center">
+        <div class="card-body">
+          <h5 class="card-title">移动端扫码访问</h5>
+          <img src="data:image/png;base64,{{ qr_code_uri }}" alt="Web Print QR Code" class="img-fluid" style="max-width: 200px;">
+          <p class="mt-2 small text-muted">URL: <code>http://{{ request.host }}{{ url_for('main.upload_file') }}</code></p>
         </div>
-        </div>
-	
-    
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.upload_file') }}">
-        <div>
-            <label for="printer">选择打印机:</label>
-            <select name="printer_name" id="printer_name" required>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-8">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.upload_file') }}">
+            <div class="mb-3">
+              <label for="printer_name" class="form-label">选择打印机</label>
+              <select name="printer_name" id="printer_name" class="form-select" required>
                 {% if printers %}
-                    {% for name, details in printers.items() %}
+                  {% for name, details in printers.items() %}
                     <option value="{{ name }}">{{ details.get('printer-info', name) }} ({{ name }})</option>
-                    {% endfor %}
+                  {% endfor %}
                 {% else %}
-                    <option value="">- 找不到可用打印机 -</option>
+                  <option value="">- 找不到可用打印机 -</option>
                 {% endif %}
-            </select>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="file" class="form-label">选择文件 (PDF, Word, Excel, TXT, 图片)</label>
+              <input class="form-control" type="file" name="file" id="file" required>
+              <div class="form-text">最大上传大小请参见服务器配置（MAX_CONTENT_LENGTH）。</div>
+            </div>
+
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="print_now" name="print_now" value="yes">
+              <label class="form-check-label" for="print_now">上传后立即打印（服务器需配置打印环境）</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" {% if not printers %}disabled{% endif %}>提交打印</button>
+          </form>
         </div>
+      </div>
 
-
-        <br>
-        <div>
-            <label for="file">选择文件 (PDF, Word, Excel, TXT):</label>
-            <input type="file" name="file" id="file" required>
-        </div>
-        <br>
-        <button type="submit" {% if not printers %}disabled{% endif %}>提交打印</button>
-    </form>
-    
-    {% if not printers %}
-    <p class="danger">没有可用的打印机。请检查 CUPS 服务器配置。</p>
-    {% endif %}
-
+      {% if not printers %}
+        <div class="alert alert-warning">没有可用的打印机。请检查 CUPS 服务器配置。</div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}

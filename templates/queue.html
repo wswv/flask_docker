@@ -3,92 +3,90 @@
 {% block title %}打印队列{% endblock %}
 
 {% block content %}
-    <h2>打印队列状态</h2>
-
-    {# ------------------------------------------------------------- #}
-    {# 新增：显眼的取消按钮区域 (对应绿框位置) #}
-    <div class="card p-3 mb-4 bg-light">
-        <h4 class="card-title">快速操作</h4>
-
-        {# 判断是否有活动作业来控制按钮状态 #}
-        {% if active_jobs %}
-            {# 当有活动作业时，启用按钮。此处取消的是第一个作业 #}
-            <form method="POST" action="{{ url_for('main.cancel_job') }}" style="display:inline;">
-                <input type="hidden" name="job_id" value="{{ active_jobs[0].id }}">
-                <button type="submit" class="btn btn-danger btn-lg">
-                    取消最近的作业 (ID: {{ active_jobs[0].id }})
-                </button>
-            </form>
-
-        {% else %}
-            {# 没有活动作业时，禁用按钮 #}
-            <button type="button" class="btn btn-secondary btn-lg" disabled>
-                取消作业 (当前无活动作业)
-            </button>
-        {% endif %}
+  <div class="row mb-3">
+    <div class="col-12">
+      <h2>打印队列状态</h2>
     </div>
-    {# ------------------------------------------------------------- #}
-    
-    <h3>当前活动队列</h3>
-    {% if active_jobs %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>打印机</th>
-                    <th>标题</th>
-                    <th>用户</th>
-                    <th>状态</th>
-                    <th>大小</th>
-                    <th>提交时间</th>
-                </tr>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card bg-light">
+        <div class="card-body">
+          <h5 class="card-title">快速操作</h5>
+          {% if active_jobs %}
+            <form method="POST" action="{{ url_for('main.cancel_job') }}" class="d-inline">
+              <input type="hidden" name="job_id" value="{{ active_jobs[0].id }}">
+              <button type="submit" class="btn btn-danger btn-lg">取消最近的作业 (ID: {{ active_jobs[0].id }})</button>
+            </form>
+          {% else %}
+            <button type="button" class="btn btn-secondary btn-lg" disabled>取消作业 (当前无活动作业)</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h4>当前活动队列</h4>
+      {% if active_jobs %}
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th><th>打印机</th><th>标题</th><th>用户</th><th>状态</th><th>大小</th><th>提交时间</th>
+              </tr>
             </thead>
             <tbody>
-                {% for job in active_jobs %}
-                <tr>
-                    <td>{{ job.id }}</td>
-                    <td>{{ job.printer }}</td>
-                    <td>{{ job.title }}</td>
-                    <td>{{ job.user }}</td>
-                    <td><span class="badge bg-warning">{{ job.state }}</span></td> 
-                    <td>{{ job.size }}</td>
-                    <td>{{ job.submission_time }}</td>
-                </tr>
-                {% endfor %}
+              {% for job in active_jobs %}
+              <tr>
+                <td>{{ job.id }}</td>
+                <td>{{ job.printer }}</td>
+                <td>{{ job.title }}</td>
+                <td>{{ job.user }}</td>
+                <td><span class="badge bg-warning text-dark">{{ job.state }}</span></td>
+                <td>{{ job.size }}</td>
+                <td>{{ job.submission_time }}</td>
+              </tr>
+              {% endfor %}
             </tbody>
-        </table>
-    {% else %}
-        <p>当前队列中没有活动打印作业。</p>
-    {% endif %}
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-secondary">当前队列中没有活动打印作业。</div>
+      {% endif %}
+    </div>
+  </div>
 
-    <h3>打印历史 (最近的 {{ history_jobs|length }} 个)</h3>
-    {% if history_jobs %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>打印机</th>
-                    <th>标题</th>
-                    <th>用户</th>
-                    <th>状态</th>
-                    <th>完成时间</th>
-                </tr>
+  <div class="row mt-4">
+    <div class="col-12">
+      <h4>打印历史 (最近的 {{ history_jobs|length }} 个)</h4>
+      {% if history_jobs %}
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th><th>打印机</th><th>标题</th><th>用户</th><th>状态</th><th>完成时间</th>
+              </tr>
             </thead>
             <tbody>
-                {% for job in history_jobs %}
-                <tr>
-                    <td>{{ job.id }}</td>
-                    <td>{{ job.printer }}</td>
-                    <td>{{ job.title }}</td>
-                    <td>{{ job.user }}</td>
-                    <td><span class="badge bg-success">{{ job.state }}</span></td> 
-                    <td>{{ job.completion_time }}</td>
-                </tr>
-                {% endfor %}
+              {% for job in history_jobs %}
+              <tr>
+                <td>{{ job.id }}</td>
+                <td>{{ job.printer }}</td>
+                <td>{{ job.title }}</td>
+                <td>{{ job.user }}</td>
+                <td><span class="badge bg-success">{{ job.state }}</span></td>
+                <td>{{ job.completion_time }}</td>
+              </tr>
+              {% endfor %}
             </tbody>
-        </table>
-    {% else %}
-        <p>暂无打印历史记录。</p>
-    {% endif %}
-
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-secondary">暂无打印历史记录。</div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
