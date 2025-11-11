@@ -27,6 +27,9 @@
       <div class="card mb-3">
         <div class="card-body">
           <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.upload_file') }}">
+            <!-- CSRF token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <div class="mb-3">
               <label for="printer_name" class="form-label">选择打印机</label>
               <select name="printer_name" id="printer_name" class="form-select" required>

@@ -28,6 +28,11 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      SECRET_KEY: ${SECRET_KEY:-replace_me_for_dev}
+      UPLOAD_FOLDER: /data/uploads
+      MAX_CONTENT_LENGTH: 52428800 # 50MB, 单位为字节
+      ALLOWED_EXTENSIONS: pdf,doc,docx,xls,xlsx,txt,png,jpg,jpeg
+      #DATABASE_URI: sqlite:////usr/src/app/users.db
     # 非 Root 运行：假设您在 Dockerfile 中创建了 'john' 用户并配置了权限
     # user: john # 在 Dockerfile 中定义的用户
     #networks:

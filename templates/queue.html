@@ -16,6 +16,8 @@
           <h5 class="card-title">快速操作</h5>
           {% if active_jobs %}
             <form method="POST" action="{{ url_for('main.cancel_job') }}" class="d-inline">
+              <!-- CSRF token -->
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <input type="hidden" name="job_id" value="{{ active_jobs[0].id }}">
               <button type="submit" class="btn btn-danger btn-lg">取消最近的作业 (ID: {{ active_jobs[0].id }})</button>
             </form>
